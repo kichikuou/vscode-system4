@@ -1,0 +1,50 @@
+{
+  "name": "system4",
+  "publisher": "kichikuou",
+  "displayName": "System 4",
+  "description": "Language support for AliceSoft's System 4 language",
+  "homepage": "https://github.com/kichikuou/vscode-system4",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kichikuou/vscode-system4.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kichikuou/vscode-system4/issues",
+    "email": "KichikuouChrome@gmail.com"
+  },
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.52.1"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:system4"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "system4",
+        "extensions": [
+          ".jaf"
+        ]
+      }
+    ]
+  },
+  "configuration": {
+    "title": "System4",
+    "properties": {
+      "system4.lspPath": {
+        "type": "string",
+        "description": "The path to system4-lsp executable."
+      }
+    }
+  },
+  "dependencies": {
+    "vscode-languageclient": "^7.0.0"
+  },
+  "private": true
+}
