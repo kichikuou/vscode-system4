@@ -30,16 +30,22 @@
         "id": "system4",
         "extensions": [
           ".jaf"
-        ]
+        ],
+        "configuration": "./language-configuration.json"
       }
-    ]
-  },
-  "configuration": {
-    "title": "System4",
-    "properties": {
-      "system4.lspPath": {
-        "type": "string",
-        "description": "The path to system4-lsp executable."
+    ],
+    "grammars": [{
+      "language": "system4",
+      "scopeName": "source.system4",
+      "path": "./syntaxes/system4.tmLanguage.json"
+    }],
+    "configuration": {
+      "title": "System4",
+      "properties": {
+        "system4.lspPath": {
+          "type": "string",
+          "description": "The path to system4-lsp executable."
+        }
       }
     }
   },
