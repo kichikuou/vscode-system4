@@ -1,12 +1,11 @@
-"use strict";
-const vscode = require("vscode");
-const languageclient = require("vscode-languageclient/node");
+import * as vscode from 'vscode';
+import * as languageclient from 'vscode-languageclient/node';
 
-let client;
+let client: languageclient.LanguageClient;
 const langID = 'system4';
 const clientName = 'System4-mode';
 
-function activate(context) {
+export function activate(context: vscode.ExtensionContext) {
     try {
         const lspPath = vscode.workspace.getConfiguration('system4').lspPath;
         const serverOptions = {
@@ -28,8 +27,6 @@ function activate(context) {
     }
 }
 
-function deactivate() {
+export function deactivate() {
     if (client) return client.stop();
 }
-
-module.exports = { activate, deactivate }

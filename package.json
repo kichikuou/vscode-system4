@@ -23,7 +23,7 @@
   "activationEvents": [
     "onLanguage:system4"
   ],
-  "main": "./extension.js",
+  "main": "dist/extension.js",
   "contributes": {
     "languages": [
       {
@@ -34,11 +34,13 @@
         "configuration": "./language-configuration.json"
       }
     ],
-    "grammars": [{
-      "language": "system4",
-      "scopeName": "source.system4",
-      "path": "./syntaxes/system4.tmLanguage.json"
-    }],
+    "grammars": [
+      {
+        "language": "system4",
+        "scopeName": "source.system4",
+        "path": "./syntaxes/system4.tmLanguage.json"
+      }
+    ],
     "configuration": {
       "title": "System4",
       "properties": {
@@ -49,8 +51,17 @@
       }
     }
   },
+  "scripts": {
+    "build": "tsc -p src/",
+    "watch": "tsc -watch -p src/"
+  },
   "dependencies": {
+    "@types/node": "^20.8.9",
     "vscode-languageclient": "^7.0.0"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@types/vscode": "^1.52.0",
+    "typescript": "^5.2.2"
+  }
 }
