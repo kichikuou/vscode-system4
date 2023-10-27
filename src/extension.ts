@@ -1,9 +1,11 @@
+import * as fs from 'fs';
 import * as vscode from 'vscode';
 import * as languageclient from 'vscode-languageclient/node';
 
 let client: languageclient.LanguageClient | null = null;
 const langID = 'system4';
 const clientName = 'System4-lsp';
+const isWindows = process.platform === "win32";
 
 export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -21,7 +23,7 @@ export async function deactivate() {
 
 async function startClient() {
     const serverOptions = {
-        command: getLspPath(),
+        command: await getLspPath(),
         args: []
     };
     const clientOptions = {
@@ -47,9 +49,22 @@ async function stopClient() {
     client = null;
 }
 
-function getLspPath(): string {
+async function getLspPath(): Promise<string> {
+    // If system4.lspPath configuration is set, return it.
     const configPath = vscode.workspace.getConfiguration('system4').lspPath;
     if (configPath) return configPath;
+
+    // If ${workspaceFolder}/system4-lsp/system4-lsp exists, return it.
+    const exeName = isWindows ? 'system4-lsp.exe' : 'system4-lsp';
     const folder = vscode.workspace.workspaceFolders?.[0];
-    return folder ? `${folder.uri.fsPath}/system4-lsp/system4-lsp.exe` : 'system4-lsp.exe';
+    if (folder) {
+        let path = `${folder.uri.fsPath}/system4-lsp/${exeName}`;
+        try {
+            await fs.promises.access(path, fs.constants.X_OK);
+            return path;
+        } catch (_) {}
+    }
+
+    // Otherwise, return "system4-lsp" hoping it is in PATH.
+    return exeName;
 }
