@@ -1,33 +1,34 @@
 import * as vscode from 'vscode';
 import * as languageclient from 'vscode-languageclient/node';
 
-let client: languageclient.LanguageClient;
+let client: languageclient.LanguageClient | null = null;
 const langID = 'system4';
 const clientName = 'System4-lsp';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+    const serverOptions = {
+        command: getLspPath(),
+        args: []
+    };
+    const clientOptions = {
+        documentSelector: [
+            {
+                scheme: "file",
+                language: langID,
+            }
+        ],
+    };
+    client = new languageclient.LanguageClient(langID, clientName, serverOptions, clientOptions);
     try {
-        const serverOptions = {
-            command: getLspPath(),
-            args: []
-        };
-        const clientOptions = {
-            documentSelector: [
-                {
-                    scheme: "file",
-                    language: langID,
-                }
-            ],
-        };
-        client = new languageclient.LanguageClient(langID, clientName, serverOptions, clientOptions);
-        context.subscriptions.push(client.start());
+        await client.start();
     } catch (e) {
-        vscode.window.showErrorMessage(`${clientName} couldn't be started.`);
+        vscode.window.showErrorMessage(`Failed to start ${clientName}.\n${e}`);
     }
 }
 
 export function deactivate() {
     if (client) return client.stop();
+    client = null;
 }
 
 function getLspPath(): string {
