@@ -6,6 +6,20 @@ const langID = 'system4';
 const clientName = 'System4-lsp';
 
 export async function activate(context: vscode.ExtensionContext) {
+    context.subscriptions.push(
+        vscode.commands.registerCommand('system4.server.restart', async () => {
+            await stopClient();
+            await startClient();
+        }),
+    );
+    await startClient();
+}
+
+export async function deactivate() {
+    await stopClient();
+}
+
+async function startClient() {
     const serverOptions = {
         command: getLspPath(),
         args: []
@@ -26,8 +40,10 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 }
 
-export function deactivate() {
-    if (client) return client.stop();
+async function stopClient() {
+    if (client && client.state !== languageclient.State.Stopped) {
+        await client.stop();
+    }
     client = null;
 }
 

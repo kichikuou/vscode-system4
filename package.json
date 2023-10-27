@@ -49,7 +49,14 @@
           "description": "The path to system4-lsp executable."
         }
       }
-    }
+    },
+    "commands": [
+      {
+        "command": "system4.server.restart",
+        "category": "System4",
+        "title": "Restart Language Server"
+      }
+    ]
   },
   "scripts": {
     "build": "tsc -p src/",
