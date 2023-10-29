@@ -3,10 +3,52 @@ import * as vscode from 'vscode';
 import { isWindows, getAinPath } from './util';
 
 const config_decompilerPath = 'decompilerPath';
-const taskType = 'system4';
+const taskSource = 'AinDecompiler';
+
+export class CompileTaskProvider implements vscode.TaskProvider {
+    static taskType = 'system4-compile';
+
+    static register(context: vscode.ExtensionContext, ainPath: string) {
+        context.subscriptions.push(
+            vscode.tasks.registerTaskProvider(
+                CompileTaskProvider.taskType, new CompileTaskProvider(ainPath)));
+    }
+
+    constructor(private ainPath: string) {}
+
+    async provideTasks() {
+        const task = this.createTask({ type: CompileTaskProvider.taskType });
+        return task ? [task] : [];
+    }
+
+    resolveTask(task: vscode.Task, token: vscode.CancellationToken) {
+        return this.createTask(task.definition);
+    }
+
+    private createTask(definition: vscode.TaskDefinition) {
+        const decompilerPath = vscode.workspace.getConfiguration('system4').get(config_decompilerPath) as string;
+        if (!decompilerPath) return;
+        let jafPath = vscode.window.activeTextEditor?.document.uri.fsPath;
+        if (!jafPath) return;
+        if (isWindows) {
+            // AinDecompiler doesn't like upper-case .JAF extension.
+            jafPath = jafPath.replace(/\.JAF$/, '.jaf');
+        }
+        const execution = new vscode.ProcessExecution(decompilerPath, [this.ainPath, jafPath, this.ainPath]);
+
+        return new vscode.Task(
+            definition,
+            vscode.TaskScope.Workspace,
+            'Quick Compile',
+            taskSource,
+            execution,
+        );
+    }
+}
 
 // Show a prompt to decompile the ain file, unless src/ folder already exists.
 export async function maybeShowDecompilePrompt() {
+    const taskType = 'system4-decompile';
     if (!isWindows) return;
     const wsUri = vscode.workspace.workspaceFolders?.[0]?.uri;
     if (!wsUri) return;
@@ -38,7 +80,7 @@ export async function maybeShowDecompilePrompt() {
         { type: taskType },
         vscode.TaskScope.Workspace,
         'Decompile',
-        taskType,
+        taskSource,
         execution,
     ));
 }
