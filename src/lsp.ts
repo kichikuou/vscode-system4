@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as languageclient from 'vscode-languageclient/node';
@@ -7,12 +6,14 @@ import { isWindows, readSjisFile, getAinPath } from './util';
 let client: languageclient.LanguageClient | null = null;
 const langID = 'system4';
 const clientName = 'System4-lsp';
+const config_lspPath = 'lspPath';
 
 export async function startClient() {
-    const lspPath = getLspPath();
+    const lspPath = await getLspPath();
+    if (!lspPath) return;
     const ainPath = await findAin();
     const serverOptions = {
-        command: await lspPath,
+        command: lspPath,
         args: ainPath ? ['--ain', ainPath] : [],
     };
     const clientOptions = {
@@ -38,24 +39,23 @@ export async function stopClient() {
     client = null;
 }
 
-async function getLspPath(): Promise<string> {
-    // If system4.lspPath configuration is set, return it.
-    const configPath = vscode.workspace.getConfiguration('system4').lspPath;
-    if (configPath) return configPath;
-
-    // If ${workspaceFolder}/system4-lsp/system4-lsp exists, return it.
-    const exeName = isWindows ? 'system4-lsp.exe' : 'system4-lsp';
-    const folder = vscode.workspace.workspaceFolders?.[0];
-    if (folder) {
-        let path = `${folder.uri.fsPath}/system4-lsp/${exeName}`;
-        try {
-            await fs.promises.access(path, fs.constants.X_OK);
-            return path;
-        } catch (_) {}
+async function getLspPath(): Promise<string | undefined> {
+    const config = vscode.workspace.getConfiguration('system4');
+    let lspPath = config.get(config_lspPath) as string | undefined;
+    if (!lspPath) {
+        const exeName = isWindows ? 'system4-lsp.exe' : 'system4-lsp';
+        const msg = `Location of ${exeName} is not set.`;
+        const pick = 'Set system4-lsp location';
+        const cmd = await vscode.window.showWarningMessage(msg, pick);
+        if (cmd !== pick) return;
+        const opts: vscode.OpenDialogOptions = { title: pick };
+        if (isWindows) opts.filters = { Executable: ['exe'] };
+        const picked = await vscode.window.showOpenDialog(opts);
+        if (!picked) return;
+        lspPath = picked[0].fsPath;
+        config.update(config_lspPath, lspPath, vscode.ConfigurationTarget.Global);
     }
-
-    // Otherwise, return "system4-lsp" hoping it is in PATH.
-    return exeName;
+    return lspPath;
 }
 
 async function findAin(): Promise<string | undefined> {
