@@ -2,11 +2,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as languageclient from 'vscode-languageclient/node';
+import { isWindows, readSjisFile, getAinPath } from './util';
 
 let client: languageclient.LanguageClient | null = null;
 const langID = 'system4';
 const clientName = 'System4-lsp';
-const isWindows = process.platform === "win32";
 
 export async function startClient() {
     const lspPath = getLspPath();
@@ -71,15 +71,8 @@ async function findAin(): Promise<string | undefined> {
     ];
     for await (const dir of possibleDirs) {
         if (!dir) continue;
-        try {
-            // Return the ain path written in AliceStart.ini or System40.ini.
-            let ini = await Promise.any([
-                readSjisFile(`${dir}/AliceStart.ini`),
-                readSjisFile(`${dir}/System40.ini`),
-            ]);
-            const match = ini.match(/^CodeName\s*=\s*"(.*)"\s*$/m);
-            return match ? `${dir}/${match[1]}` : undefined;
-        } catch (_) {}
+        const path = getAinPath(dir);
+        if (path) return path;
     }
     return undefined;
 }
@@ -94,9 +87,4 @@ async function getProjectOutputDir(): Promise<string | undefined> {
     const match = pje.match(/^OutputDir\s*=\s*"(.*)"\s*$/m);
     if (!match) return undefined;
     return path.join(path.dirname(pjePath), match[1]);
-}
-
-async function readSjisFile(path: string): Promise<string> {
-    const content = await fs.promises.readFile(path);
-    return new TextDecoder('shift_jis').decode(content);
 }

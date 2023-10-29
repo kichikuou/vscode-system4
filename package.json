@@ -21,6 +21,8 @@
     "Programming Languages"
   ],
   "activationEvents": [
+    "workspaceContains:System40.ini",
+    "workspaceContains:AliceStart.ini",
     "onLanguage:system4"
   ],
   "main": "dist/extension.js",
@@ -29,7 +31,8 @@
       {
         "id": "system4",
         "extensions": [
-          ".jaf"
+          ".jaf",
+          ".JAF"
         ],
         "configuration": "./language-configuration.json"
       }
@@ -47,6 +50,10 @@
         "system4.lspPath": {
           "type": "string",
           "description": "The path to system4-lsp executable."
+        },
+        "system4.decompilerPath": {
+          "type": "string",
+          "description": "The path to AinDecompiler executable."
         }
       }
     },
@@ -55,6 +62,11 @@
         "command": "system4.server.restart",
         "category": "System4",
         "title": "Restart Language Server"
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "system4"
       }
     ]
   },

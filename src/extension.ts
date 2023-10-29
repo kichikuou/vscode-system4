@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { startClient, stopClient } from './lsp';
+import { maybeShowDecompilePrompt } from './task';
 
 export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -8,6 +9,7 @@ export async function activate(context: vscode.ExtensionContext) {
             await startClient();
         }),
     );
+    await maybeShowDecompilePrompt();
     await startClient();
 }
 
