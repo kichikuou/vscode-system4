@@ -75,16 +75,16 @@
     ]
   },
   "scripts": {
-    "build": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --minify --sourcemap",
-    "watch": "npm run build -- --watch"
+    "build": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --minify",
+    "watch": "npm run build -- --watch",
+    "test": "cd src && tsc"
   },
   "dependencies": {
     "@types/node": "^20.8.9",
+    "@types/vscode": "1.67.0",
+    "esbuild": "^0.19.5",
+    "typescript": "^5.2.2",
     "vscode-languageclient": "^8.1.0"
   },
-  "private": true,
-  "devDependencies": {
-    "@types/vscode": "1.67.0",
-    "esbuild": "^0.19.5"
-  }
+  "private": true
 }
