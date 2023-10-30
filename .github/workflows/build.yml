@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        npm install
+        npm test
+        npm run build
+
+    - name: Package
+      run: |
+        npm install -g vsce
+        vsce package
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: vscode-system4
+        path: '*.vsix'
