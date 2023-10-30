@@ -83,4 +83,9 @@ export async function maybeShowDecompilePrompt() {
         taskSource,
         execution,
     ));
+
+    // Since AinDecompiler generates files in Shift-JIS, set the encoding of
+    // the workspace to Shift-JIS.
+    vscode.workspace.getConfiguration('').update(
+        'files.encoding', 'shiftjis', vscode.ConfigurationTarget.Workspace, true);
 }
