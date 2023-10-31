@@ -20,7 +20,7 @@ To use all the features of this extension, the following software is required:
 
 Here we explain how to decompile a game and edit the source code using this extension.
 
-1. Download AinDecompiler and System4-lsp, and unzip them somewhere on your PC.
+1. Download AinDecompiler and [System4-lsp](https://github.com/kichikuou/system4-lsp/releases), and unzip them somewhere on your PC.
 2. Install this extension from the [Marketplace](https://marketplace.visualstudio.com/items?itemName=kichikuou.system4).
 3. In VSCode, open the folder containing System4 game data (`.ain` file).
 4. The extension will ask you if you want to decompile the game. Click "Yes".
