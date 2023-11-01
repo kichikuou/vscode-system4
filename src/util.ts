@@ -46,3 +46,31 @@ async function getProjectOutputDir(): Promise<string | undefined> {
     if (!match) return undefined;
     return path.join(path.dirname(pjePath), match[1]);
 }
+
+export async function getExePath(name: string, configName: string, ainPath: string | undefined): Promise<string | undefined> {
+    const config = vscode.workspace.getConfiguration('system4');
+    let configuredPath = config.get(configName) as string | undefined;
+    if (configuredPath) return configuredPath;
+
+    const exeName = isWindows ?  name + '.exe' : name;
+    // If `${ainDir}/system4-lsp/${exeName}` exists, use it.
+    if (ainPath) {
+        const exePath = path.join(path.dirname(ainPath), name, exeName);
+        try {
+            await fs.promises.access(exePath, fs.constants.X_OK);
+            return exePath;
+        } catch (_) {}
+    }
+
+    const msg = `Cannot find ${exeName}.`;
+    const pick = `Set ${name} location`;
+    const cmd = await vscode.window.showWarningMessage(msg, pick);
+    if (cmd !== pick) return;
+    const opts: vscode.OpenDialogOptions = { title: pick };
+    if (isWindows) opts.filters = { Executable: ['exe'] };
+    const picked = await vscode.window.showOpenDialog(opts);
+    if (!picked) return;
+    configuredPath = picked[0].fsPath;
+    config.update(configName, configuredPath, vscode.ConfigurationTarget.Global);
+    return configuredPath;
+}
