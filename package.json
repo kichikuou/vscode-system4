@@ -22,6 +22,7 @@
     "Programming Languages"
   ],
   "activationEvents": [
+    "workspaceContains:*.jaf",
     "workspaceContains:System40.ini",
     "workspaceContains:AliceStart.ini",
     "onLanguage:system4"
