@@ -1,6 +1,5 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
-import { isWindows, getAinPath } from './util';
+import { isWindows } from './util';
 
 const config_decompilerPath = 'decompilerPath';
 const taskSource = 'AinDecompiler';
@@ -17,6 +16,7 @@ export class CompileTaskProvider implements vscode.TaskProvider {
     constructor(private ainPath: string) {}
 
     async provideTasks() {
+        if (!await getDecompilerPath()) return [];
         const task = this.createTask({ type: CompileTaskProvider.taskType });
         return task ? [task] : [];
     }
@@ -46,24 +46,14 @@ export class CompileTaskProvider implements vscode.TaskProvider {
     }
 }
 
-// Show a prompt to decompile the ain file, unless src/ folder already exists.
-export async function maybeShowDecompilePrompt() {
-    const taskType = 'system4-decompile';
-    if (!isWindows) return;
-    const wsUri = vscode.workspace.workspaceFolders?.[0]?.uri;
-    if (!wsUri) return;
-    const srcExists = await vscode.workspace.fs.stat(vscode.Uri.joinPath(wsUri, 'src')).then(() => true, () => false);
-    if (srcExists) return;
-    const ainPath = await getAinPath(wsUri.fsPath);
-    if (!ainPath) return;
-    if (await vscode.window.showInformationMessage(`Decompile ${ainPath}?`, 'Yes', 'No') !== 'Yes') return;
-
-    // Let the user to set the location of AinDecompiler if it is not set.
+async function getDecompilerPath(): Promise<string | undefined> {
     const config = vscode.workspace.getConfiguration('system4');
     let decompilerPath = config.get(config_decompilerPath) as string | undefined;
     if (!decompilerPath) {
-        const msg = 'Select the location of AinDecompiler.exe.';
-        if (await vscode.window.showInformationMessage(msg, { modal: true }, 'OK') !== 'OK') return;
+        const msg = 'Location of AinDecompiler.exe is not set.';
+        const pick = 'Set AinDecompiler location';
+        const cmd = await vscode.window.showWarningMessage(msg, pick);
+        if (cmd !== pick) return;
         const picked = await vscode.window.showOpenDialog({
             title: 'Set AinDecompiler location',
             filters: { Executable: ['exe'] }
@@ -72,20 +62,5 @@ export async function maybeShowDecompilePrompt() {
         decompilerPath = picked[0].fsPath;
         config.update(config_decompilerPath, decompilerPath, vscode.ConfigurationTarget.Global);
     }
-
-    // Run AinDecompiler.
-    const pjePath = path.join(path.dirname(ainPath), 'src', path.basename(ainPath, '.ain') + '.pje');
-    const execution = new vscode.ProcessExecution(decompilerPath, [ainPath, pjePath]);
-    vscode.tasks.executeTask(new vscode.Task(
-        { type: taskType },
-        vscode.TaskScope.Workspace,
-        'Decompile',
-        taskSource,
-        execution,
-    ));
-
-    // Since AinDecompiler generates files in Shift-JIS, set the encoding of
-    // the workspace to Shift-JIS.
-    vscode.workspace.getConfiguration('').update(
-        'files.encoding', 'shiftjis', vscode.ConfigurationTarget.Workspace, true);
+    return decompilerPath;
 }

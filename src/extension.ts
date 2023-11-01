@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { startClient, stopClient } from './lsp';
-import { maybeShowDecompilePrompt, CompileTaskProvider } from './task';
+import { CompileTaskProvider } from './task';
 import { getAinPath } from './util';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -17,7 +17,6 @@ export async function activate(context: vscode.ExtensionContext) {
             await startClient();
         }),
     );
-    await maybeShowDecompilePrompt();
     await startClient();
 }
 
