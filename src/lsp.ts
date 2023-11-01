@@ -1,17 +1,15 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import * as languageclient from 'vscode-languageclient/node';
-import { isWindows, readSjisFile, getAinPath } from './util';
+import { isWindows } from './util';
 
 let client: languageclient.LanguageClient | null = null;
 const langID = 'system4';
 const clientName = 'System4-lsp';
 const config_lspPath = 'lspPath';
 
-export async function startClient() {
+export async function startClient(ainPath: string | undefined) {
     const lspPath = await getLspPath();
     if (!lspPath) return;
-    const ainPath = await findAin();
     const serverOptions = {
         command: lspPath,
         args: ainPath ? ['--ain', ainPath] : [],
@@ -56,35 +54,4 @@ async function getLspPath(): Promise<string | undefined> {
         config.update(config_lspPath, lspPath, vscode.ConfigurationTarget.Global);
     }
     return lspPath;
-}
-
-async function findAin(): Promise<string | undefined> {
-    const wsPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-    // Determine the path of the AIN file to be read by several heuristics.
-    const possibleDirs = [
-        // Workspace root
-        Promise.resolve(wsPath),
-        // Parent directory of the workspace root
-        Promise.resolve(wsPath && path.dirname(wsPath)),
-        // `OutputDir` directory of .pje file in the workspace root
-        getProjectOutputDir(),
-    ];
-    for await (const dir of possibleDirs) {
-        if (!dir) continue;
-        const path = getAinPath(dir);
-        if (path) return path;
-    }
-    return undefined;
-}
-
-// Searches for the first file with a `.pje` extension in the current workspace
-// and returns the directory path specified in the `OutputDir` field of the file.
-async function getProjectOutputDir(): Promise<string | undefined> {
-    const pjeFiles = await vscode.workspace.findFiles('*.pje');
-    if (pjeFiles.length === 0) return undefined;
-    const pjePath = pjeFiles[0].fsPath;
-    const pje = await readSjisFile(pjePath);
-    const match = pje.match(/^OutputDir\s*=\s*"(.*)"\s*$/m);
-    if (!match) return undefined;
-    return path.join(path.dirname(pjePath), match[1]);
 }

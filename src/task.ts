@@ -7,7 +7,8 @@ const taskSource = 'AinDecompiler';
 export class CompileTaskProvider implements vscode.TaskProvider {
     static taskType = 'system4-compile';
 
-    static register(context: vscode.ExtensionContext, ainPath: string) {
+    static register(context: vscode.ExtensionContext, ainPath: string | undefined) {
+        if (!ainPath) return;
         context.subscriptions.push(
             vscode.tasks.registerTaskProvider(
                 CompileTaskProvider.taskType, new CompileTaskProvider(ainPath)));
