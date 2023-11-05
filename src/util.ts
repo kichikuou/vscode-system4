@@ -9,7 +9,20 @@ async function readSjisFile(path: string): Promise<string> {
     return new TextDecoder('shift_jis').decode(content);
 }
 
-export async function findAin(): Promise<string | undefined> {
+export interface ProjectPaths {
+    ainPath?: string;
+    srcDir?: string;
+}
+
+export async function getProjectPaths(): Promise<ProjectPaths> {
+    const pje = await readProjectFile();
+    return {
+        ainPath: await findAin(pje),
+        srcDir: pje?.sourceDir,
+    }
+}
+
+async function findAin(pje: Pje | undefined): Promise<string | undefined> {
     const wsPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
     // Determine the path of the AIN file to be read by several heuristics.
     const possibleDirs = [
@@ -17,8 +30,8 @@ export async function findAin(): Promise<string | undefined> {
         Promise.resolve(wsPath),
         // Parent directory of the workspace root
         Promise.resolve(wsPath && path.dirname(wsPath)),
-        // `OutputDir` directory of .pje file in the workspace root
-        getProjectOutputDir(),
+        // `OutputDir` directory of .pje file
+        pje?.outputDir,
     ];
     for await (const dir of possibleDirs) {
         if (!dir) continue;
@@ -35,16 +48,29 @@ export async function findAin(): Promise<string | undefined> {
     return undefined;
 }
 
-// Searches for the first file with a `.pje` extension in the current workspace
-// and returns the directory path specified in the `OutputDir` field of the file.
-async function getProjectOutputDir(): Promise<string | undefined> {
-    const pjeFiles = await vscode.workspace.findFiles('*.pje');
+interface Pje {
+    sourceDir?: string;
+    outputDir?: string;
+}
+
+// Parses the first `.pje` file found in the current workspace.
+async function readProjectFile(): Promise<Pje | undefined> {
+    const pjeFiles = await vscode.workspace.findFiles('**/*.pje', undefined, 1);
     if (pjeFiles.length === 0) return undefined;
     const pjePath = pjeFiles[0].fsPath;
     const pje = await readSjisFile(pjePath);
-    const match = pje.match(/^OutputDir\s*=\s*"(.*)"\s*$/m);
-    if (!match) return undefined;
-    return path.join(path.dirname(pjePath), match[1]);
+    const result : Pje = {};
+    for (const m of pje.matchAll(/^(\w+)\s*=\s*"(.*)"\s*$/gm)) {
+        switch (m[1]) {
+            case 'SourceDir':
+                result.sourceDir = path.join(path.dirname(pjePath), m[2]);
+                break;
+            case 'OutputDir':
+                result.outputDir = path.join(path.dirname(pjePath), m[2]);
+                break;
+        }
+    }
+    return result;
 }
 
 export async function getExePath(name: string, configName: string, ainPath: string | undefined): Promise<string | undefined> {
