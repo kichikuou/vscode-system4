@@ -1,10 +1,13 @@
 import * as vscode from 'vscode';
 import { startClient, stopClient } from './lsp';
 import { CompileTaskProvider } from './task';
-import { getProjectPaths } from './util';
+import { log, getProjectPaths } from './util';
 
 export async function activate(context: vscode.ExtensionContext) {
+    log.info('Activating System4 extension...');
+
     const paths = await getProjectPaths();
+    log.info('Project information:', paths);
 
     // This asks the user to set the location of system4-lsp if it is not set.
     await startClient(paths);

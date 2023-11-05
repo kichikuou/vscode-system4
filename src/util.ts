@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 
 export const isWindows = process.platform === "win32";
+export const log = vscode.window.createOutputChannel('System4 extension', { log: true });
 
 async function readSjisFile(path: string): Promise<string> {
     const content = await fs.promises.readFile(path);
@@ -45,6 +46,7 @@ async function findAin(pje: Pje | undefined): Promise<string | undefined> {
             if (match) return path.join(dir, match[1]);
         } catch (_) {}
     }
+    log.warn('Cannot find AIN file.');
     return undefined;
 }
 
@@ -58,6 +60,7 @@ async function readProjectFile(): Promise<Pje | undefined> {
     const pjeFiles = await vscode.workspace.findFiles('**/*.pje', undefined, 1);
     if (pjeFiles.length === 0) return undefined;
     const pjePath = pjeFiles[0].fsPath;
+    log.info('Reading project information from ', pjePath);
     const pje = await readSjisFile(pjePath);
     const result : Pje = {};
     for (const m of pje.matchAll(/^(\w+)\s*=\s*"(.*)"\s*$/gm)) {
