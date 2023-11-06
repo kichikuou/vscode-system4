@@ -62,8 +62,5 @@ You are ready to use this extension.
 4. The extension asks you whether to set text encoding to Shift-JIS. Click "Yes". (Otherwise you'll see garbled text.)
 5. Open a `.jaf` source file and edit it as you like.
 6. Once you are done, press `Ctrl+Shift+B` (shortcut for "Run Build Task" command).
-7. You will see "No build task to run found. Configure Build Task..." message. Press Enter.
-8. Select "AinDecompiler: Quick Compile" from the list.
-9. VSCode will create `.vscode/tasks.json` file. Close it and back to the `.jaf` file.
-10. Press `Ctrl+Shift+B` again. Now AinDecompiler will compile the current `.jaf` file and overwrite the `.ain` file.
-11. Run the game and check if it works as expected.
+7. Select "AinDecompiler: Quick Compile" from the list. AinDecompiler will compile the current `.jaf` file and overwrite the `.ain` file.
+8. Run the game and check if it works as expected.

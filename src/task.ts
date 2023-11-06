@@ -40,12 +40,14 @@ export class CompileTaskProvider implements vscode.TaskProvider {
         }
         const execution = new vscode.ProcessExecution(this.decompilerPath, [this.ainPath, jafPath, this.ainPath]);
 
-        return new vscode.Task(
+        const task = new vscode.Task(
             definition,
             vscode.TaskScope.Workspace,
             'Quick Compile',
             taskSource,
             execution,
         );
+        task.group = vscode.TaskGroup.Build;
+        return task;
     }
 }
