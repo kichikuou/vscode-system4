@@ -4,3 +4,4 @@ node_modules/
 syntaxes/grammar.rb
 src/
 dist/*.js.map
+system4-lsp-*.zip

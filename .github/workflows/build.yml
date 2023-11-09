@@ -17,10 +17,22 @@ jobs:
         npm test
         npm run build
 
-    - name: Package
+    - name: Create universal package
       run: |
-        npm install -g vsce
+        npm install -g @vscode/vsce
         vsce package
+
+    - name: Download System4-lsp
+      uses: robinraju/release-downloader@v1.8
+      with:
+        repository: "kichikuou/system4-lsp"
+        tag: "v0.0.3"
+        fileName: "system4-lsp-*-windows-x64.zip"
+        extract: true
+
+    - name: Create windows package
+      run: |
+        vsce package --target win32-x64
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v3

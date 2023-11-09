@@ -1,3 +1,4 @@
 node_modules/
 dist/
+system4-lsp/
 *.vsix
