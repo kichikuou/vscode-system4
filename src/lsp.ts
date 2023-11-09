@@ -35,7 +35,7 @@ export async function startClient(paths: ProjectPaths) {
     client = new languageclient.LanguageClient(langID, clientName, serverOptions, clientOptions);
     try {
         await client.start();
-        log.info('system4-lsp started.');
+        log.info(`${lspPath} started.`);
     } catch (e) {
         vscode.window.showErrorMessage(`Failed to start ${clientName}.\n${e}`);
         log.error(e as Error);

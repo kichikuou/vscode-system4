@@ -77,12 +77,21 @@ async function readProjectFile(): Promise<Pje | undefined> {
 }
 
 export async function getExePath(name: string, configName: string, ainPath: string | undefined): Promise<string | undefined> {
+    // If the path is configured, use it.
     const config = vscode.workspace.getConfiguration('system4');
     let configuredPath = config.get(configName) as string | undefined;
     if (configuredPath) return configuredPath;
 
     const exeName = isWindows ?  name + '.exe' : name;
-    // If `${ainDir}/system4-lsp/${exeName}` exists, use it.
+
+    // If the bundled `${name}/${exeName}` exists, use it.
+    const bundledPath = path.join(__dirname, '..', name, exeName);
+    try {
+        await fs.promises.access(bundledPath, fs.constants.X_OK);
+        return bundledPath;
+    } catch (_) {}
+
+    // If `${ainDir}/${name}/${exeName}` exists, use it.
     if (ainPath) {
         const exePath = path.join(path.dirname(ainPath), name, exeName);
         try {
@@ -91,6 +100,7 @@ export async function getExePath(name: string, configName: string, ainPath: stri
         } catch (_) {}
     }
 
+    // Prompt the user to set the path.
     const msg = `Cannot find ${exeName}.`;
     const pick = `Set ${name} location`;
     const cmd = await vscode.window.showWarningMessage(msg, pick);
