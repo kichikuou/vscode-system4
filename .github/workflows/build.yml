@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build
       run: |
@@ -23,7 +23,7 @@ jobs:
         vsce package
 
     - name: Download System4-lsp
-      uses: robinraju/release-downloader@v1.8
+      uses: robinraju/release-downloader@v1
       with:
         repository: "kichikuou/system4-lsp"
         tag: "v0.0.3"
@@ -35,7 +35,7 @@ jobs:
         vsce package --target win32-x64
 
     - name: Upload build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: vscode-system4
         path: '*.vsix'
