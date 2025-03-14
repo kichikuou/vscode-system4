@@ -82,10 +82,10 @@
     "test": "cd src && tsc"
   },
   "dependencies": {
-    "@types/node": "^20.8.9",
+    "@types/node": "16.x",
     "@types/vscode": "1.74.0",
     "esbuild": "^0.19.5",
-    "typescript": "^5.2.2",
+    "typescript": "5.5.x",
     "vscode-languageclient": "^8.1.0"
   },
   "private": true
