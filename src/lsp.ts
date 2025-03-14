@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as languageclient from 'vscode-languageclient/node';
-import { log, getExePath, ProjectPaths } from './util';
+import { log, getExePath, ProjectInfo } from './util';
 
 let client: languageclient.LanguageClient | null = null;
 const langID = 'system4';
@@ -10,19 +10,17 @@ const config_lspPath = 'lspPath';
 interface InitializationOptions {
     ainPath?: string;
     srcDir?: string;
+    srcEncoding?: string;
 }
 
-export async function startClient(paths: ProjectPaths) {
-    const lspPath = await getExePath('system4-lsp', config_lspPath, paths.ainPath);
+export async function startClient(proj: ProjectInfo) {
+    const lspPath = await getExePath('system4-lsp', config_lspPath, proj.ainPath);
     if (!lspPath) {
         log.warn('startClient: could not find system4-lsp.');
         return;
     }
-    const serverOptions = {
-        command: lspPath,
-        args: paths.ainPath ? ['--ain', paths.ainPath] : [],  // TODO: Remove this line after a few releases.
-    };
-    const initializationOptions: InitializationOptions = Object.assign({}, paths);
+    const serverOptions = { command: lspPath };
+    const initializationOptions: InitializationOptions = Object.assign({}, proj);
     const clientOptions = {
         documentSelector: [
             {

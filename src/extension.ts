@@ -1,27 +1,27 @@
 import * as vscode from 'vscode';
 import { startClient, stopClient } from './lsp';
 import { CompileTaskProvider } from './task';
-import { log, getProjectPaths } from './util';
+import { log, getProjectInfo } from './util';
 
 export async function activate(context: vscode.ExtensionContext) {
     log.info('Activating System4 extension...');
 
-    const paths = await getProjectPaths();
-    log.info('Project information:', paths);
+    const proj = await getProjectInfo();
+    log.info('Project information:', proj);
 
     // This asks the user to set the location of system4-lsp if it is not set.
-    await startClient(paths);
+    await startClient(proj);
     context.subscriptions.push(
         vscode.commands.registerCommand('system4.server.restart', async () => {
             await stopClient();
-            await startClient(paths);
+            await startClient(proj);
         }),
     );
     // This asks the user to set the location of AinDecompiler if it is not set.
-    await CompileTaskProvider.register(context, paths.ainPath);
+    await CompileTaskProvider.register(context, proj.ainPath);
 
-    if (paths.srcDir) {
-        offerEncodingConfigChange();
+    if (proj.srcDir) {
+        offerEncodingConfigChange(proj.srcEncoding);
     }
 }
 
@@ -29,7 +29,8 @@ export async function deactivate() {
     await stopClient();
 }
 
-function offerEncodingConfigChange() {
+function offerEncodingConfigChange(projEncoding: string | undefined) {
+    if (projEncoding?.toLowerCase() === 'utf-8') return;
     const filesConfig = vscode.workspace.getConfiguration('files');
     if (filesConfig.get('encoding') === 'shiftjis' || filesConfig.get('autoGuessEncoding')) return;
 

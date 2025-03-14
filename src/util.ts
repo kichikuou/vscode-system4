@@ -10,16 +10,18 @@ async function readSjisFile(path: string): Promise<string> {
     return new TextDecoder('shift_jis').decode(content);
 }
 
-export interface ProjectPaths {
+export interface ProjectInfo {
     ainPath?: string;
     srcDir?: string;
+    srcEncoding?: string;
 }
 
-export async function getProjectPaths(): Promise<ProjectPaths> {
+export async function getProjectInfo(): Promise<ProjectInfo> {
     const pje = await readProjectFile();
     return {
         ainPath: await findAin(pje),
         srcDir: pje?.sourceDir,
+        srcEncoding: pje?.encoding,
     }
 }
 
@@ -53,6 +55,7 @@ async function findAin(pje: Pje | undefined): Promise<string | undefined> {
 interface Pje {
     sourceDir?: string;
     outputDir?: string;
+    encoding?: string;
 }
 
 // Parses the first `.pje` file found in the current workspace.
@@ -70,6 +73,9 @@ async function readProjectFile(): Promise<Pje | undefined> {
                 break;
             case 'OutputDir':
                 result.outputDir = path.join(path.dirname(pjePath), m[2]);
+                break;
+            case 'Encoding':
+                result.encoding = m[2];
                 break;
         }
     }
