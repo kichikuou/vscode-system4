@@ -56,6 +56,11 @@
         "system4.decompilerPath": {
           "type": "string",
           "description": "The path to AinDecompiler executable."
+        },
+        "system4.xsystem4Path": {
+          "type": "string",
+          "default": "xsystem4",
+          "description": "Specifies the path to xsystem4 executable."
         }
       }
     },
@@ -73,6 +78,81 @@
       {
         "type": "system4-compile",
         "when": "resourceExtname == .jaf || resourceExtname == .JAF"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "xsystem4",
+        "languages": [ "system4" ],
+        "label": "XSystem4",
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program",
+              "runDir",
+              "args"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "Path to the xsystem4 executable file.",
+                "default": "${config:system4.xsystem4Path}"
+              },
+              "env": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Environment variables defined as a key value pair.",
+                "default": {}
+              },
+              "runDir": {
+                "type": "string",
+                "description": "Working directory for the xsystem4 process.",
+                "default": "${workspaceFolder}"
+              },
+              "args": {
+                "type": "array",
+                "description": "Command line arguments passed to the xsystem4 process.",
+                "default": ["--debug-api", "${workspaceFolder}"]
+              },
+              "trace": {
+                "type": "boolean",
+                "description": "Enable logging of the Debug Adapter Protocol.",
+                "default": false
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "xsystem4",
+            "request": "launch",
+            "name": "Debug",
+            "program": "${config:system4.xsystem4Path}",
+            "runDir": "${workspaceFolder}",
+            "args": ["--debug-api", "${workspaceFolder}"]
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "XSystem4: Debug",
+            "description": "A new configuration for debugging a System 4 project using xsystem4.",
+            "body": {
+              "type": "xsystem4",
+              "request": "launch",
+              "name": "Debug",
+              "program": "\"\\${config:system4.xsystem4Path}\"",
+              "runDir": "\"\\${workspaceFolder}\"",
+              "args": "[\"--debug-api\", \"\\${workspaceFolder}/src\"]"
+            }
+          }
+        ]
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "system4"
       }
     ]
   },
