@@ -1,8 +1,6 @@
-name: Build
+name: Build and Publish
 
-on:
-  - pull_request
-  - push
+on: push
 
 jobs:
   build:
@@ -39,3 +37,12 @@ jobs:
       with:
         name: vscode-system4
         path: '*.vsix'
+
+    - name: Publish to marketplace
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        for vsix in *.vsix; do
+          vsce publish --packagePath "$vsix"
+        done
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
