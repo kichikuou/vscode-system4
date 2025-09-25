@@ -24,7 +24,7 @@ jobs:
       uses: robinraju/release-downloader@v1
       with:
         repository: "kichikuou/system4-lsp"
-        tag: "v0.1.0"
+        tag: "v0.1.1"
         fileName: "system4-lsp-*-windows-x64.zip"
         extract: true
 
