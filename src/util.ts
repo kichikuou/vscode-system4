@@ -90,8 +90,8 @@ export async function getExePath(name: string, configName: string, ainPath: stri
 
     const exeName = isWindows ?  name + '.exe' : name;
 
-    // If the bundled `${name}/${exeName}` exists, use it.
-    const bundledPath = path.join(__dirname, '..', name, exeName);
+    // If the bundled `sys4lang/${exeName}` exists, use it.
+    const bundledPath = path.join(__dirname, '..', 'sys4lang', exeName);
     try {
         await fs.promises.access(bundledPath, fs.constants.X_OK);
         return bundledPath;

@@ -15,7 +15,7 @@ This extension adds support for the AliceSoft's System 4 programming language.
 To use all the features of this extension, the following software is required:
 
 - AinDecompiler
-- [System4-lsp](https://github.com/kichikuou/system4-lsp)
+- [Sys4lang](https://github.com/kichikuou/sys4lang)
   - For Windows, you don't need to install this separately because the extension bundles a prebuilt binary.
 
 ## Getting Started

@@ -51,7 +51,7 @@
       "properties": {
         "system4.lspPath": {
           "type": "string",
-          "description": "The path to system4-lsp executable."
+          "description": "The path to sys4lsp executable."
         },
         "system4.decompilerPath": {
           "type": "string",

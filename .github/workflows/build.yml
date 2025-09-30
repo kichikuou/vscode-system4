@@ -20,12 +20,12 @@ jobs:
         npm install -g @vscode/vsce
         vsce package
 
-    - name: Download System4-lsp
+    - name: Download sys4lang
       uses: robinraju/release-downloader@v1
       with:
-        repository: "kichikuou/system4-lsp"
-        tag: "v0.1.1"
-        fileName: "system4-lsp-*-windows-x64.zip"
+        repository: "kichikuou/sys4lang"
+        tag: "v0.2.0"
+        fileName: "sys4lang-*-windows-x64.zip"
         extract: true
 
     - name: Create windows package

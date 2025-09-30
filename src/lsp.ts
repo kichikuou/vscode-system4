@@ -4,7 +4,7 @@ import { log, getExePath, ProjectInfo } from './util';
 
 let client: languageclient.LanguageClient | null = null;
 const langID = 'system4';
-const clientName = 'System4-lsp';
+const clientName = 'sys4lsp';
 const config_lspPath = 'lspPath';
 
 interface InitializationOptions {
@@ -14,9 +14,9 @@ interface InitializationOptions {
 }
 
 export async function startClient(proj: ProjectInfo) {
-    const lspPath = await getExePath('system4-lsp', config_lspPath, proj.ainPath);
+    const lspPath = await getExePath('sys4lsp', config_lspPath, proj.ainPath);
     if (!lspPath) {
-        log.warn('startClient: could not find system4-lsp.');
+        log.warn('startClient: could not find sys4lsp.');
         return;
     }
     const serverOptions = { command: lspPath };
@@ -43,7 +43,7 @@ export async function startClient(proj: ProjectInfo) {
 export async function stopClient() {
     if (client && client.state !== languageclient.State.Stopped) {
         await client.stop();
-        log.info('system4-lsp stopped.');
+        log.info('sys4lsp stopped.');
     }
     client = null;
 }

@@ -14,7 +14,7 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.debug.registerDebugConfigurationProvider('xsystem4', new Xsystem4ConfigurationProvider()),
     );
     activateDebugger(context);
-    // This asks the user to set the location of system4-lsp if it is not set.
+    // This asks the user to set the location of sys4lsp if it is not set.
     await startClient(proj);
     context.subscriptions.push(
         vscode.commands.registerCommand('system4.server.restart', async () => {

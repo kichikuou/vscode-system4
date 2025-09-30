@@ -1,4 +1,4 @@
 node_modules/
 dist/
-system4-lsp/
+sys4lang/
 *.vsix
