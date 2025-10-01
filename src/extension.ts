@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { decompileWorkspace } from './decompile';
 import { activateDebugger } from './debugger';
 import { startClient, stopClient } from './lsp';
 import { CompileTaskProvider } from './task';
@@ -17,6 +18,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // This asks the user to set the location of sys4lsp if it is not set.
     await startClient(proj);
     context.subscriptions.push(
+        vscode.commands.registerCommand('system4.decompile', decompileWorkspace),
         vscode.commands.registerCommand('system4.server.restart', async () => {
             await stopClient();
             await startClient(proj);
