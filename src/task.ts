@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { log, isWindows, getExePath } from './util';
 
-const config_decompilerPath = 'decompilerPath';
 const taskSource = 'AinDecompiler';
 
 export class CompileTaskProvider implements vscode.TaskProvider {
@@ -9,7 +8,7 @@ export class CompileTaskProvider implements vscode.TaskProvider {
 
     static async register(context: vscode.ExtensionContext, ainPath: string | undefined) {
         if (!ainPath) return;
-        const decompilerPath = await getExePath('AinDecompiler', config_decompilerPath, ainPath);
+        const decompilerPath = await getExePath('AinDecompiler');
         if (!decompilerPath) {
             log.warn('CompileTaskProvider: could not find AinDecompiler.');
             return;

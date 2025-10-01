@@ -49,13 +49,9 @@
     "configuration": {
       "title": "System4",
       "properties": {
-        "system4.lspPath": {
+        "system4.sys4langPath": {
           "type": "string",
-          "description": "The path to sys4lsp executable."
-        },
-        "system4.decompilerPath": {
-          "type": "string",
-          "description": "The path to sys4dc executable."
+          "description": "Directory containing sys4c, sys4dc, and sys4lang executables."
         },
         "system4.xsystem4Path": {
           "type": "string",

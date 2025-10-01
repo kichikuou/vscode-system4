@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
 import { log, getExePath } from './util';
 
-const config_decompilerPath = 'decompilerPath';
-
 export async function decompileWorkspace() {
 	const folder = vscode.workspace.workspaceFolders?.[0];
 	if (!folder) {
@@ -26,7 +24,7 @@ export async function decompileWorkspace() {
         return;
     }
     const ainPath = ainFiles[0].fsPath;
-    const decompilerPath = await getExePath('sys4dc', config_decompilerPath, ainPath);
+    const decompilerPath = await getExePath('sys4dc');
     if (!decompilerPath) {
         log.warn('Could not find sys4dc.');
         return;

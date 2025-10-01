@@ -82,40 +82,51 @@ async function readProjectFile(): Promise<Pje | undefined> {
     return result;
 }
 
-export async function getExePath(name: string, configName: string, ainPath: string | undefined): Promise<string | undefined> {
+const config_sys4langPath = 'sys4langPath';
+
+async function getSys4langDir(name: string): Promise<string | undefined> {
     // If the path is configured, use it.
     const config = vscode.workspace.getConfiguration('system4');
-    let configuredPath = config.get(configName) as string | undefined;
-    if (configuredPath) return configuredPath;
+    let configuredPath = config.get(config_sys4langPath) as string | undefined;
+    if (configuredPath) {
+        return configuredPath;
+    }
 
-    const exeName = isWindows ?  name + '.exe' : name;
-
-    // If the bundled `sys4lang/${exeName}` exists, use it.
-    const bundledPath = path.join(__dirname, '..', 'sys4lang', exeName);
+    // If the bundled `sys4lang` exists, use it.
+    const bundledPath = path.join(__dirname, '..', 'sys4lang');
     try {
-        await fs.promises.access(bundledPath, fs.constants.X_OK);
+        await fs.promises.access(bundledPath, fs.constants.F_OK);
         return bundledPath;
     } catch (_) {}
 
-    // If `${ainDir}/${name}/${exeName}` exists, use it.
-    if (ainPath) {
-        const exePath = path.join(path.dirname(ainPath), name, exeName);
-        try {
-            await fs.promises.access(exePath, fs.constants.X_OK);
-            return exePath;
-        } catch (_) {}
-    }
-
     // Prompt the user to set the path.
-    const msg = `Cannot find ${exeName}.`;
+    const msg = `Cannot find ${name}.`;
     const pick = `Set ${name} location`;
     const cmd = await vscode.window.showWarningMessage(msg, pick);
     if (cmd !== pick) return;
-    const opts: vscode.OpenDialogOptions = { title: pick };
-    if (isWindows) opts.filters = { Executable: ['exe'] };
+    const opts: vscode.OpenDialogOptions = {
+        title: `Select a directory containing ${name}`,
+        canSelectFiles: false,
+        canSelectFolders: true
+    };
     const picked = await vscode.window.showOpenDialog(opts);
-    if (!picked) return;
+    if (!picked) return undefined;
     configuredPath = picked[0].fsPath;
-    config.update(configName, configuredPath, vscode.ConfigurationTarget.Global);
+    config.update(config_sys4langPath, configuredPath, vscode.ConfigurationTarget.Global);
     return configuredPath;
+}
+
+export async function getExePath(name: string): Promise<string | undefined> {
+    const dir = await getSys4langDir(name);
+    if (!dir) return undefined;
+
+    for (const ext of ['', '.exe']) {
+        const fullPath = path.join(dir, name + ext);
+        try {
+            await fs.promises.access(fullPath, fs.constants.X_OK);
+            return fullPath;
+        } catch (_) {}
+    }
+    vscode.window.showErrorMessage(`Cannot find ${name} executable in ${dir}.`);
+    return undefined;
 }
