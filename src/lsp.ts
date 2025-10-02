@@ -19,7 +19,11 @@ export async function startClient(proj: ProjectInfo) {
         return;
     }
     const serverOptions = { command: lspPath };
-    const initializationOptions: InitializationOptions = Object.assign({}, proj);
+    const initializationOptions: InitializationOptions = {
+        ainPath: proj.ainPath,
+        srcDir: proj.srcDir,
+        srcEncoding: proj.srcEncoding,
+    };
     const clientOptions = {
         documentSelector: [
             {

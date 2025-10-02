@@ -3,7 +3,7 @@ import { decompileWorkspace } from './decompile';
 import { activateDebugger } from './debugger';
 import { startClient, stopClient } from './lsp';
 import { CompileTaskProvider } from './task';
-import { log, getProjectInfo } from './util';
+import { log, getProjectInfo, ProjectInfo } from './util';
 
 export async function activate(context: vscode.ExtensionContext) {
     log.info('Activating System4 extension...');
@@ -18,11 +18,12 @@ export async function activate(context: vscode.ExtensionContext) {
     // This asks the user to set the location of sys4lsp if it is not set.
     await startClient(proj);
     context.subscriptions.push(
-        vscode.commands.registerCommand('system4.decompile', decompileWorkspace),
-        vscode.commands.registerCommand('system4.server.restart', async () => {
-            await stopClient();
-            await startClient(proj);
+        vscode.commands.registerCommand('system4.decompile', async () => {
+            if (await decompileWorkspace(proj)) {
+                await restartClient(proj);
+            }
         }),
+        vscode.commands.registerCommand('system4.server.restart', () => restartClient(proj)),
     );
     // This asks the user to set the location of AinDecompiler if it is not set.
     await CompileTaskProvider.register(context, proj);
@@ -30,6 +31,11 @@ export async function activate(context: vscode.ExtensionContext) {
     if (proj.srcDir) {
         offerEncodingConfigChange(proj.srcEncoding);
     }
+}
+
+async function restartClient(proj: ProjectInfo) {
+    await stopClient();
+    await startClient(proj);
 }
 
 export async function deactivate() {

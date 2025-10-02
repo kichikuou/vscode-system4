@@ -1,33 +1,33 @@
 import * as vscode from 'vscode';
-import { log, getExePath } from './util';
+import { log, getExePath, ProjectInfo, getProjectInfo } from './util';
 
-export async function decompileWorkspace() {
+export async function decompileWorkspace(proj: ProjectInfo): Promise<boolean> {
 	const folder = vscode.workspace.workspaceFolders?.[0];
 	if (!folder) {
 		vscode.window.showErrorMessage('No workspace folder.');
-		return;
+		return false;
 	}
 	if (await hasMatchingFiles(folder, 'src/*.pje')) {
 		const selected = await vscode.window.showWarningMessage(
 			'"src" folder already exists. Decompile anyway?', {modal: true}, 'Yes');
 		if (selected !== 'Yes') {
-			return;
+			return false;
 		}
 	}
     const ainFiles = await vscode.workspace.findFiles(new vscode.RelativePattern(folder, '*.[aA][iI][nN]'));
     if (ainFiles.length === 0) {
         vscode.window.showErrorMessage('No .ain files found in the workspace root.');
-        return;
+        return false;
     }
     if (ainFiles.length > 1) {
         vscode.window.showErrorMessage('Multiple .ain files found in the workspace root.');
-        return;
+        return false;
     }
     const ainPath = ainFiles[0].fsPath;
     const decompilerPath = await getExePath('sys4dc');
     if (!decompilerPath) {
         log.warn('Could not find sys4dc.');
-        return;
+        return false;
     }
     const args = ['-o', 'src', ainPath];
     const execution = new vscode.ShellExecution(decompilerPath, args);
@@ -46,7 +46,10 @@ export async function decompileWorkspace() {
     const exitCode = await exitCodePromise;
     if (exitCode !== 0) {
         vscode.window.showErrorMessage('Decompilation failed. See terminal log for details.');
+        return false;
     }
+    Object.assign(proj, await getProjectInfo());
+    return true;
 }
 
 async function hasMatchingFiles(folder: vscode.WorkspaceFolder, pattern: string): Promise<boolean> {
