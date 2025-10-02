@@ -37,6 +37,7 @@ export class CompileTaskProvider implements vscode.TaskProvider {
             'compile',
             'system4',
             execution,
+            '$sys4c'
         );
         task.group = vscode.TaskGroup.Build;
         return task;

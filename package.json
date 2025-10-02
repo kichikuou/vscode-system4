@@ -80,6 +80,24 @@
         "type": "system4-compile"
       }
     ],
+    "problemMatchers": [
+      {
+        "name": "sys4c",
+        "owner": "system4",
+        "fileLocation": [
+          "autoDetect",
+          "${workspaceFolder}/src"
+        ],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+)-(\\d+): (.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "endColumn": 4,
+          "message": 5
+        }
+      }
+    ],
     "debuggers": [
       {
         "type": "xsystem4",
