@@ -77,8 +77,7 @@
         "type": "system4-decompile"
       },
       {
-        "type": "system4-compile",
-        "when": "resourceExtname == .jaf || resourceExtname == .JAF"
+        "type": "system4-compile"
       }
     ],
     "debuggers": [

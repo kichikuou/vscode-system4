@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-export const isWindows = process.platform === "win32";
 export const log = vscode.window.createOutputChannel('System4 extension', { log: true });
 
 async function readSjisFile(path: string): Promise<string> {
@@ -11,6 +10,7 @@ async function readSjisFile(path: string): Promise<string> {
 }
 
 export interface ProjectInfo {
+    pjePath?: string;
     ainPath?: string;
     srcDir?: string;
     srcEncoding?: string;
@@ -19,6 +19,7 @@ export interface ProjectInfo {
 export async function getProjectInfo(): Promise<ProjectInfo> {
     const pje = await readProjectFile();
     return {
+        pjePath: pje?.pjePath,
         ainPath: await findAin(pje),
         srcDir: pje?.sourceDir,
         srcEncoding: pje?.encoding,
@@ -53,6 +54,7 @@ async function findAin(pje: Pje | undefined): Promise<string | undefined> {
 }
 
 interface Pje {
+    pjePath?: string;
     sourceDir?: string;
     outputDir?: string;
     encoding?: string;
@@ -65,7 +67,7 @@ async function readProjectFile(): Promise<Pje | undefined> {
     const pjePath = pjeFiles[0].fsPath;
     log.info('Reading project information from ', pjePath);
     const pje = await readSjisFile(pjePath);
-    const result : Pje = {};
+    const result : Pje = { pjePath };
     for (const m of pje.matchAll(/^(\w+)\s*=\s*"(.*)"\s*$/gm)) {
         switch (m[1]) {
             case 'SourceDir':

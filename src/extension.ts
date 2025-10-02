@@ -25,7 +25,7 @@ export async function activate(context: vscode.ExtensionContext) {
         }),
     );
     // This asks the user to set the location of AinDecompiler if it is not set.
-    await CompileTaskProvider.register(context, proj.ainPath);
+    await CompileTaskProvider.register(context, proj);
 
     if (proj.srcDir) {
         offerEncodingConfigChange(proj.srcEncoding);

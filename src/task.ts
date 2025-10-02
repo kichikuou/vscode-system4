@@ -1,25 +1,22 @@
 import * as vscode from 'vscode';
-import { log, isWindows, getExePath } from './util';
-
-const taskSource = 'AinDecompiler';
+import { log, getExePath, ProjectInfo } from './util';
 
 export class CompileTaskProvider implements vscode.TaskProvider {
     static taskType = 'system4-compile';
 
-    static async register(context: vscode.ExtensionContext, ainPath: string | undefined) {
-        if (!ainPath) return;
-        const decompilerPath = await getExePath('AinDecompiler');
-        if (!decompilerPath) {
-            log.warn('CompileTaskProvider: could not find AinDecompiler.');
+    static async register(context: vscode.ExtensionContext, proj: ProjectInfo) {
+        const compilerPath = await getExePath('sys4c');
+        if (!compilerPath) {
+            log.warn('CompileTaskProvider: could not find sys4c.');
             return;
         }
         context.subscriptions.push(
             vscode.tasks.registerTaskProvider(
-                CompileTaskProvider.taskType, new CompileTaskProvider(ainPath, decompilerPath)));
+                CompileTaskProvider.taskType, new CompileTaskProvider(proj, compilerPath)));
         log.info('CompileTaskProvider registered.');
     }
 
-    constructor(private ainPath: string, private decompilerPath: string) {}
+    constructor(private proj: ProjectInfo, private compilerPath: string) {}
 
     async provideTasks() {
         const task = this.createTask({ type: CompileTaskProvider.taskType });
@@ -31,19 +28,14 @@ export class CompileTaskProvider implements vscode.TaskProvider {
     }
 
     private createTask(definition: vscode.TaskDefinition) {
-        let jafPath = vscode.window.activeTextEditor?.document.uri.fsPath;
-        if (!jafPath) return;
-        if (isWindows) {
-            // AinDecompiler doesn't like upper-case .JAF extension.
-            jafPath = jafPath.replace(/\.JAF$/, '.jaf');
-        }
-        const execution = new vscode.ProcessExecution(this.decompilerPath, [this.ainPath, jafPath, this.ainPath]);
+        if (!this.proj.pjePath) return;
+        const execution = new vscode.ShellExecution(this.compilerPath, ['build', '--output-dir=.', this.proj.pjePath])
 
         const task = new vscode.Task(
             definition,
             vscode.TaskScope.Workspace,
-            'Quick Compile',
-            taskSource,
+            'compile',
+            'system4',
             execution,
         );
         task.group = vscode.TaskGroup.Build;
