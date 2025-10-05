@@ -3,6 +3,7 @@ import { decompileWorkspace } from './decompile';
 import { activateDebugger } from './debugger';
 import { startClient, stopClient } from './lsp';
 import { CompileTaskProvider } from './task';
+import { getXsystem4Path } from './xsystem4';
 import { log, getProjectInfo, ProjectInfo } from './util';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -74,54 +75,4 @@ class Xsystem4ConfigurationProvider implements vscode.DebugConfigurationProvider
 		}
 		return config;
 	}
-}
-
-const config_xsystem4Path = 'xsystem4Path';
-
-async function getXsystem4Path(): Promise<string> {
-    const defaultPath = 'xsystem4';  // We need to return something.
-
-    // If the path is configured, use it.
-    const config = vscode.workspace.getConfiguration('system4');
-    let configuredPath = config.get(config_xsystem4Path) as string | undefined;
-    if (configuredPath) {
-        return configuredPath;
-    }
-
-    // On Windows, search for xsystem4*/xsystem4.exe in the workspace.
-    if (process.platform === 'win32') {
-        const folder = vscode.workspace.workspaceFolders?.[0];
-        if (!folder) {
-            return defaultPath;
-        }
-        const exeFiles = await vscode.workspace.findFiles('xsystem4*/xsystem4.exe');
-        if (exeFiles.length > 0) {
-            const exePaths = exeFiles.map(f => f.fsPath);
-            exePaths.sort();
-            return exePaths[exePaths.length - 1];
-        }
-    }
-
-    // Prompt the user to select xsystem4 path.
-    const exeName = process.platform === 'win32' ? 'xsystem4.exe' : 'xsystem4';
-    const selected = await vscode.window.showInformationMessage(
-        `Path to xsystem4 is not set. Please select ${exeName}.`,
-        { modal: true }, 'Select File');
-    if (selected !== 'Select File') {
-        return defaultPath;
-    }
-    const options: vscode.OpenDialogOptions = {
-        canSelectMany: false,
-        openLabel: `Select ${exeName}`,
-    };
-    if (process.platform === 'win32') {
-        options.filters = { 'Executables': ['exe'] };
-    }
-    const uris = await vscode.window.showOpenDialog(options);
-    if (!uris || uris.length === 0) {
-        return defaultPath;
-    }
-    configuredPath = uris[0].fsPath;
-    await config.update(config_xsystem4Path, configuredPath, vscode.ConfigurationTarget.Workspace);
-    return configuredPath;
 }

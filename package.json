@@ -100,7 +100,9 @@
     "debuggers": [
       {
         "type": "xsystem4",
-        "languages": [ "system4" ],
+        "languages": [
+          "system4"
+        ],
         "label": "XSystem4",
         "configurationAttributes": {
           "launch": {
@@ -131,7 +133,10 @@
               "args": {
                 "type": "array",
                 "description": "Command line arguments passed to the xsystem4 process.",
-                "default": ["--debug-api", "${workspaceFolder}"]
+                "default": [
+                  "--debug-api",
+                  "${workspaceFolder}"
+                ]
               },
               "trace": {
                 "type": "boolean",
@@ -147,7 +152,10 @@
             "request": "launch",
             "name": "Debug",
             "program": "${command:GetXsystem4Path}",
-            "args": ["--debug-api", "${workspaceFolder}"]
+            "args": [
+              "--debug-api",
+              "${workspaceFolder}"
+            ]
           }
         ],
         "configurationSnippets": [
@@ -182,6 +190,7 @@
     "@types/node": "16.x",
     "@types/vscode": "1.74.0",
     "esbuild": "^0.25.9",
+    "fflate": "^0.8.2",
     "typescript": "5.5.x",
     "vscode-languageclient": "^8.1.0"
   },
