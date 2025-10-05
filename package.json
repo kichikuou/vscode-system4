@@ -55,7 +55,6 @@
         },
         "system4.xsystem4Path": {
           "type": "string",
-          "default": "xsystem4",
           "description": "Specifies the path to xsystem4 executable."
         }
       }
@@ -114,7 +113,7 @@
               "program": {
                 "type": "string",
                 "description": "Path to the xsystem4 executable file.",
-                "default": "${config:system4.xsystem4Path}"
+                "default": "${command:GetXsystem4Path}"
               },
               "env": {
                 "type": "object",
@@ -147,8 +146,7 @@
             "type": "xsystem4",
             "request": "launch",
             "name": "Debug",
-            "program": "${config:system4.xsystem4Path}",
-            "runDir": "${workspaceFolder}",
+            "program": "${command:GetXsystem4Path}",
             "args": ["--debug-api", "${workspaceFolder}"]
           }
         ],
@@ -160,12 +158,14 @@
               "type": "xsystem4",
               "request": "launch",
               "name": "Debug",
-              "program": "\"\\${config:system4.xsystem4Path}\"",
-              "runDir": "\"\\${workspaceFolder}\"",
-              "args": "[\"--debug-api\", \"\\${workspaceFolder}/src\"]"
+              "program": "^\"\\${command:GetXsystem4Path}\"",
+              "args": "^[\"--debug-api\", \"\\${workspaceFolder}\"]"
             }
           }
-        ]
+        ],
+        "variables": {
+          "GetXsystem4Path": "system4.getXsystem4Path"
+        }
       }
     ],
     "breakpoints": [

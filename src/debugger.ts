@@ -1,4 +1,5 @@
 import { execFile, ExecFileException } from 'child_process';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { log } from './util';
 
@@ -13,7 +14,8 @@ class DebugAdapterFactory implements vscode.DebugAdapterDescriptorFactory {
 	async createDebugAdapterDescriptor(session: vscode.DebugSession) {
 		const config = session.configuration;
 		const xsystem4 = config.program;
-		const options: any = { cwd: config.runDir };
+		const cwd = config.runDir || (path.isAbsolute(xsystem4) ? path.dirname(xsystem4) : undefined);
+		const options: any = { cwd };
 		if (config.env)
 			options.env = config.env;
 
@@ -22,11 +24,6 @@ class DebugAdapterFactory implements vscode.DebugAdapterDescriptorFactory {
 		// We need to check if the program exists and is executable beforehand.
 		let err = await this.checkExecutable(xsystem4, ['--version'], options);
 		if (err) {
-			if (process.platform === 'win32' && xsystem4 == 'xsystem4') {
-				err += '\nPlease copy xsystem4.exe to the workspace folder and try again.';
-			} else {
-				err += '\nPlease install xsystem4 and set the path in the settings.';
-			}
 			vscode.window.showErrorMessage(err);
 		}
 
