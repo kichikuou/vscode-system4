@@ -29,7 +29,7 @@ export async function decompileWorkspace(proj: ProjectInfo): Promise<boolean> {
         log.warn('Could not find sys4dc.');
         return false;
     }
-    const args = ['-o', 'src', ainPath];
+    const args = ['-o', 'src', '--move-to-original-file', ainPath];
     const execution = new vscode.ShellExecution(decompilerPath, args);
 	const task = new vscode.Task(
 		{ type: 'system4-decompile' }, vscode.TaskScope.Workspace, 'decompile', 'system4', execution);
