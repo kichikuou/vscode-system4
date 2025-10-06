@@ -50,3 +50,25 @@ export async function stopClient() {
     }
     client = null;
 }
+
+export async function gotoEntryPoint() {
+    if (!client || client.state !== languageclient.State.Running) {
+        return;
+    }
+    try {
+        const response: languageclient.Location = await client.sendRequest('system4/entryPoint');
+        if (!response) {
+            log.info('No entry point found.');
+            return;
+        }
+        const uri = vscode.Uri.parse(response.uri);
+        const doc = await vscode.workspace.openTextDocument(uri);
+        const editor = await vscode.window.showTextDocument(doc);
+        const range = new vscode.Range(
+            response.range.start.line, response.range.start.character,
+            response.range.end.line, response.range.end.character);
+        editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+    } catch (e) {
+        log.error(e as Error);
+    }
+}
