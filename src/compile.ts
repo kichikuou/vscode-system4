@@ -5,21 +5,16 @@ export class CompileTaskProvider implements vscode.TaskProvider {
     static taskType = 'system4-compile';
 
     static async register(context: vscode.ExtensionContext, proj: ProjectInfo) {
-        const compilerPath = await getExePath('sys4c');
-        if (!compilerPath) {
-            log.warn('CompileTaskProvider: could not find sys4c.');
-            return;
-        }
         context.subscriptions.push(
             vscode.tasks.registerTaskProvider(
-                CompileTaskProvider.taskType, new CompileTaskProvider(proj, compilerPath)));
+                CompileTaskProvider.taskType, new CompileTaskProvider(proj)));
         log.info('CompileTaskProvider registered.');
     }
 
-    constructor(private proj: ProjectInfo, private compilerPath: string) {}
+    constructor(private proj: ProjectInfo) {}
 
     async provideTasks() {
-        const task = this.createTask({ type: CompileTaskProvider.taskType });
+        const task = await this.createTask({ type: CompileTaskProvider.taskType });
         return task ? [task] : [];
     }
 
@@ -27,9 +22,14 @@ export class CompileTaskProvider implements vscode.TaskProvider {
         return this.createTask(task.definition);
     }
 
-    private createTask(definition: vscode.TaskDefinition) {
+    private async createTask(definition: vscode.TaskDefinition) {
         if (!this.proj.pjePath) return;
-        const execution = new vscode.ShellExecution(this.compilerPath, ['build', '--output-dir=.', this.proj.pjePath])
+        const compilerPath = await getExePath('sys4c');
+        if (!compilerPath) {
+            log.warn('CompileTaskProvider: could not find sys4c.');
+            return;
+        }
+        const execution = new vscode.ShellExecution(compilerPath, ['build', '--output-dir=.', this.proj.pjePath])
 
         const task = new vscode.Task(
             definition,

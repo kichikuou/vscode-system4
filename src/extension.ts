@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { decompileWorkspace } from './decompile';
 import { activateDebugger } from './debugger';
 import { startClient, stopClient, gotoEntryPoint } from './lsp';
-import { CompileTaskProvider } from './task';
+import { CompileTaskProvider } from './compile';
 import { getXsystem4Path } from './xsystem4';
 import { log, getProjectInfo, ProjectInfo } from './util';
 
