@@ -56,6 +56,10 @@
         "system4.xsystem4Path": {
           "type": "string",
           "description": "Specifies the path to xsystem4 executable."
+        },
+        "system4.decompilerPath": {
+          "type": "string",
+          "description": "The path to AinDecompiler executable. (deprecated)"
         }
       }
     },
@@ -77,6 +81,9 @@
       },
       {
         "type": "system4-compile"
+      },
+      {
+        "type": "system4-aindecompiler-compile"
       }
     ],
     "problemMatchers": [

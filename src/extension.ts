@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { decompileWorkspace } from './decompile';
 import { activateDebugger } from './debugger';
 import { startClient, stopClient, gotoEntryPoint } from './lsp';
-import { CompileTaskProvider } from './compile';
+import { registerCompileTaskProviders } from './compile';
 import { getXsystem4Path } from './xsystem4';
 import { log, getProjectInfo, ProjectInfo } from './util';
 
@@ -28,8 +28,7 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('system4.server.restart', () => restartClient(proj)),
         vscode.commands.registerCommand('system4.getXsystem4Path', getXsystem4Path),
     );
-    // This asks the user to set the location of AinDecompiler if it is not set.
-    await CompileTaskProvider.register(context, proj);
+    await registerCompileTaskProviders(context, proj);
 
     if (proj.srcDir) {
         offerEncodingConfigChange(proj.srcEncoding);
