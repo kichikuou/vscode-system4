@@ -34,7 +34,7 @@ class Sys4cTaskProvider implements vscode.TaskProvider {
             log.warn('Sys4cTaskProvider: could not find sys4c.');
             return;
         }
-        const execution = new vscode.ShellExecution(compilerPath, ['build', '--output-dir=.', this.proj.pjePath])
+        const execution = new vscode.ShellExecution(compilerPath, ['build', this.proj.pjePath])
 
         const task = new vscode.Task(
             definition,
