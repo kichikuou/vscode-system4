@@ -2,6 +2,8 @@
 
 This extension adds support for AliceSoft's System 4 programming language.
 
+![Screenshot](images/screenshot.png)
+
 ## Features
 
 This extension provides the following features:
