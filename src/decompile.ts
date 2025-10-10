@@ -23,14 +23,15 @@ export async function decompileWorkspace(proj: ProjectInfo): Promise<boolean> {
         vscode.window.showErrorMessage('Multiple .ain files found in the workspace root.');
         return false;
     }
-    const ainPath = ainFiles[0].fsPath;
+    const ainPath = vscode.workspace.asRelativePath(ainFiles[0], false);
     const decompilerPath = await getExePath('sys4dc');
     if (!decompilerPath) {
         log.warn('Could not find sys4dc.');
         return false;
     }
     const args = ['-o', 'src', '--move-to-original-file', ainPath];
-    const execution = new vscode.ShellExecution(decompilerPath, args);
+    const cwd = folder.uri.fsPath;
+    const execution = new vscode.ShellExecution(decompilerPath, args, { cwd });
 	const task = new vscode.Task(
 		{ type: 'system4-decompile' }, vscode.TaskScope.Workspace, 'decompile', 'system4', execution);
 
