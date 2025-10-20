@@ -51,7 +51,7 @@
       "properties": {
         "system4.sys4langPath": {
           "type": "string",
-          "description": "Directory containing sys4c, sys4dc, and sys4lang executables."
+          "description": "Directory containing sys4c, sys4dc, and sys4lsp executables."
         },
         "system4.xsystem4Path": {
           "type": "string",

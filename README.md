@@ -64,4 +64,4 @@ Once you have decompiled the game, you can edit the source files and compile the
 You can customize the extension's behavior with the following settings:
 
 - `system4.xsystem4Path`: Path to the xsystem4 executable. If not set, the extension searches for `xsystem4*\xsystem4.exe` in the workspace folder on Windows.
-- `system4.sys4langPath`: Directory containing the `sys4c`, `sys4dc`, and `sys4lang` executables. On Windows, this path takes precedence over the bundled version.
+- `system4.sys4langPath`: Directory containing the `sys4c`, `sys4dc`, and `sys4lsp` executables. On Windows, this path takes precedence over the bundled version.
