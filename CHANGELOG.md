@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.0 - 2025-10-25
+- Updated bundled sys4lang to v0.5.0.
+
 ## 1.0.0 - 2025-10-11
 This release introduces significant changes to the recommended workflow. Users
 of previous versions are encouraged to re-read `README.md`.
