@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { decompileWorkspace } from './decompile';
 import { activateDebugger } from './debugger';
 import { startClient, stopClient, gotoEntryPoint } from './lsp';
@@ -24,6 +25,7 @@ export async function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand('system4.server.restart', () => restartClient(proj)),
         vscode.commands.registerCommand('system4.getXsystem4Path', getXsystem4Path),
+        vscode.commands.registerCommand('system4.getGameDir', () => getGameDir(proj)),
     );
     await registerCompileTaskProviders(context, proj);
 
@@ -39,6 +41,11 @@ async function restartClient(proj: ProjectInfo) {
 
 export async function deactivate() {
     await stopClient();
+}
+
+function getGameDir(proj: ProjectInfo): string {
+    return proj.ainPath ? path.dirname(proj.ainPath) :
+        vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || ''
 }
 
 function offerEncodingConfigChange(projEncoding: string | undefined) {

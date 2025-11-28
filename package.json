@@ -142,7 +142,7 @@
                 "description": "Command line arguments passed to the xsystem4 process.",
                 "default": [
                   "--debug-api",
-                  "${workspaceFolder}"
+                  "${command:GetGameDir}"
                 ]
               },
               "trace": {
@@ -161,7 +161,7 @@
             "program": "${command:GetXsystem4Path}",
             "args": [
               "--debug-api",
-              "${workspaceFolder}"
+              "${command:GetGameDir}"
             ]
           }
         ],
@@ -174,12 +174,13 @@
               "request": "launch",
               "name": "Debug",
               "program": "^\"\\${command:GetXsystem4Path}\"",
-              "args": "^[\"--debug-api\", \"\\${workspaceFolder}\"]"
+              "args": "^[\"--debug-api\", \"\\${command:GetGameDir}\"]"
             }
           }
         ],
         "variables": {
-          "GetXsystem4Path": "system4.getXsystem4Path"
+          "GetXsystem4Path": "system4.getXsystem4Path",
+          "GetGameDir": "system4.getGameDir"
         }
       }
     ],
