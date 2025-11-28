@@ -5,6 +5,7 @@ import { log } from './util';
 
 export function activateDebugger(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
+        vscode.debug.registerDebugConfigurationProvider('xsystem4', new Xsystem4ConfigurationProvider()),
 		vscode.debug.registerDebugAdapterDescriptorFactory('xsystem4', new DebugAdapterFactory()),
 		vscode.debug.registerDebugAdapterTrackerFactory('xsystem4', new DebugAdapterTrackerFactory()),
 	);
@@ -63,5 +64,22 @@ class DebugAdapterTrackerFactory implements vscode.DebugAdapterTrackerFactory {
 				log.info('DAP recv', m);
 			}
 		};
+	}
+}
+
+class Xsystem4ConfigurationProvider implements vscode.DebugConfigurationProvider {
+	resolveDebugConfiguration(
+		folder: vscode.WorkspaceFolder | undefined,
+		config: vscode.DebugConfiguration,
+		token?: vscode.CancellationToken
+	): vscode.ProviderResult<vscode.DebugConfiguration> {
+		// If config is empty (no launch.json), copy initialConfigurations from our package.json.
+		if (Object.keys(config).length === 0) {
+			const packageJSON = vscode.extensions.getExtension('kichikuou.system4')?.packageJSON;
+			if (packageJSON) {
+				Object.assign(config, packageJSON.contributes.debuggers[0].initialConfigurations[0]);
+			}
+		}
+		return config;
 	}
 }
