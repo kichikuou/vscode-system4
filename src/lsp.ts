@@ -26,6 +26,7 @@ export async function startClient(proj: ProjectInfo) {
         srcDir: proj.srcDir,
         srcEncoding: proj.srcEncoding,
     };
+    log.info('LSP initialization options:', initializationOptions);
     const clientOptions = {
         documentSelector: [
             {
