@@ -24,7 +24,7 @@ jobs:
       uses: robinraju/release-downloader@v1
       with:
         repository: "kichikuou/sys4lang"
-        tag: "v0.6.0"
+        tag: "v0.7.1"
         fileName: "sys4lang-*-windows-x64.zip"
         extract: true
 
