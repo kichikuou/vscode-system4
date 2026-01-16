@@ -8,6 +8,7 @@ const clientName = 'sys4lsp';
 
 interface InitializationOptions {
     ainPath?: string;
+    pjePath?: string;
     srcDir?: string;
     srcEncoding?: string;
 }
@@ -21,6 +22,7 @@ export async function startClient(proj: ProjectInfo) {
     const serverOptions = { command: lspPath };
     const initializationOptions: InitializationOptions = {
         ainPath: proj.ainPath,
+        pjePath: proj.pjePath,
         srcDir: proj.srcDir,
         srcEncoding: proj.srcEncoding,
     };
