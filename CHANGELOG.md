@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.0 - 2026-01-17
+- Updated bundled sys4lang to v0.7.1.
+
 ## 1.2.0 - 2025-11-01
 - Updated bundled sys4lang to v0.6.0.
 
