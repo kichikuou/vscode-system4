@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Build
       run: |
@@ -21,10 +21,10 @@ jobs:
         vsce package
 
     - name: Upload build artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
-        name: vscode-system4
         path: '*.vsix'
+        archive: false
 
     - name: Publish to marketplace
       if: startsWith(github.ref, 'refs/tags/v')
