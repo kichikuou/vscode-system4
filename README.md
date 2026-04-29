@@ -13,6 +13,9 @@ This extension provides the following features:
   - Inline error messages
   - Hover type information
   - Jump to definition
+  - Find References
+  - Code Completion
+  - Signature Help
 - Decompiling `.ain` files and compiling `.jaf` files.
 - Debugging with xsystem4:
   - [Breakpoints](https://code.visualstudio.com/docs/editor/debugging#_breakpoints)
