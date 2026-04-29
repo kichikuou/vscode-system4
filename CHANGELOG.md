@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+- On Windows x64 / Linux x64, sys4lang is now downloaded from GitHub Releases
+  on demand instead of being bundled with the extension. Updates are checked
+  periodically and the extension prompts before installing them.
+
 ## 1.3.1 - 2026-01-31
 - Updated bundled sys4lang to v0.7.2.
 

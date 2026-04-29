@@ -15,22 +15,10 @@ jobs:
         npm test
         npm run build
 
-    - name: Create universal package
+    - name: Create package
       run: |
         npm install -g @vscode/vsce
         vsce package
-
-    - name: Download sys4lang
-      uses: robinraju/release-downloader@v1
-      with:
-        repository: "kichikuou/sys4lang"
-        tag: "v0.7.2"
-        fileName: "sys4lang-*-windows-x64.zip"
-        extract: true
-
-    - name: Create windows package
-      run: |
-        vsce package --target win32-x64
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4

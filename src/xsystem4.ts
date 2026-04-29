@@ -131,7 +131,7 @@ async function downloadAndExtractXsystem4(basePath: string): Promise<string | un
     }
 }
 
-function getJson(url: string): Promise<any> {
+export function getJson(url: string): Promise<any> {
     const options = {
         headers: { 'User-Agent': 'vscode-system4-extension' }
     };
@@ -162,7 +162,7 @@ function getJson(url: string): Promise<any> {
     });
 }
 
-function downloadFile(url: string, onProgress?: (downloaded: number, total: number) => void): Promise<Buffer> {
+export function downloadFile(url: string, onProgress?: (downloaded: number, total: number) => void): Promise<Buffer> {
     const options = {
         headers: { 'User-Agent': 'vscode-system4-extension' }
     };

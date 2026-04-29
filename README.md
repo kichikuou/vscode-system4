@@ -24,11 +24,11 @@ This extension provides the following features:
 To use all features of this extension, the following software is required:
 
 - [Sys4lang](https://github.com/kichikuou/sys4lang) for decompiling, compiling, and providing language features.
-  - For Windows, you don't need to install this separately because the extension bundles prebuilt binaries.
+  - On Windows (x64) and Linux (x64), this extension can download prebuilt binaries automatically and check for updates.
 - [xsystem4](https://github.com/nunuhara/xsystem4) for debugging.
   - For Windows, this extension can download and install xsystem4 automatically.
 
-On non-Windows platforms, you need to install these tools manually. Please refer to their respective repositories for installation instructions.
+On other platforms, you need to install these tools manually. Please refer to their respective repositories for installation instructions.
 
 ## Getting Started
 
@@ -64,4 +64,4 @@ Once you have decompiled the game, you can edit the source files and compile the
 You can customize the extension's behavior with the following settings:
 
 - `system4.xsystem4Path`: Path to the xsystem4 executable. If not set, the extension searches for `xsystem4*\xsystem4.exe` in the workspace folder on Windows.
-- `system4.sys4langPath`: Directory containing the `sys4c`, `sys4dc`, and `sys4lsp` executables. On Windows, this path takes precedence over the bundled version.
+- `system4.sys4langPath`: Directory containing the `sys4c`, `sys4dc`, and `sys4lsp` executables. If set, the extension will use this directory and skip the automatic download and update checks.

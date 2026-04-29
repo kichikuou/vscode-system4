@@ -5,10 +5,12 @@ import { activateDebugger } from './debugger';
 import { startClient, stopClient, gotoEntryPoint } from './lsp';
 import { registerCompileTaskProviders } from './compile';
 import { getXsystem4Path } from './xsystem4';
+import * as sys4lang from './sys4lang';
 import { log, getProjectInfo, ProjectInfo } from './util';
 
 export async function activate(context: vscode.ExtensionContext) {
     log.info('Activating System4 extension...');
+    sys4lang.init(context);
 
     const proj = await getProjectInfo();
     log.info('Project information:', proj);
@@ -32,6 +34,11 @@ export async function activate(context: vscode.ExtensionContext) {
     if (proj.srcDir) {
         offerEncodingConfigChange(proj.srcEncoding);
     }
+
+    void sys4lang.checkForUpdates({
+        onBeforeInstall: () => stopClient(),
+        onAfterInstall: () => startClient(proj),
+    });
 }
 
 async function restartClient(proj: ProjectInfo) {

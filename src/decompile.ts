@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { log, getExePath, ProjectInfo, getProjectInfo } from './util';
+import { log, ProjectInfo, getProjectInfo } from './util';
+import { getExePath } from './sys4lang';
 
 export async function decompileWorkspace(proj: ProjectInfo): Promise<boolean> {
 	const folder = vscode.workspace.workspaceFolders?.[0];

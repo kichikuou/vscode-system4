@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as languageclient from 'vscode-languageclient/node';
-import { log, getExePath, ProjectInfo } from './util';
+import { log, ProjectInfo } from './util';
+import { getExePath } from './sys4lang';
 
 let client: languageclient.LanguageClient | null = null;
 const langID = 'system4';

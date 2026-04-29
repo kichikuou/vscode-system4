@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { log, getExePath, ProjectInfo } from './util';
+import { log, ProjectInfo } from './util';
+import { getExePath } from './sys4lang';
 
 export async function registerCompileTaskProviders(context: vscode.ExtensionContext, proj: ProjectInfo) {
     await Sys4cTaskProvider.register(context, proj);
