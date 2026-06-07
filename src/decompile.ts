@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import { log, ProjectInfo, getProjectInfo } from './util';
 import { getExePath } from './sys4lang';
 
+// Directory (relative to the workspace root) that sys4dc decompiles into.
+const outputDirName = 'src';
+
 export async function decompileWorkspace(proj: ProjectInfo): Promise<boolean> {
 	const folder = vscode.workspace.workspaceFolders?.[0];
 	if (!folder) {
@@ -30,7 +33,7 @@ export async function decompileWorkspace(proj: ProjectInfo): Promise<boolean> {
         log.warn('Could not find sys4dc.');
         return false;
     }
-    const args = ['-o', 'src', '--move-to-original-file', ainPath];
+    const args = ['-o', outputDirName, '--move-to-original-file', ainPath];
     const cwd = folder.uri.fsPath;
     const execution = new vscode.ShellExecution(decompilerPath, args, { cwd });
 	const task = new vscode.Task(
@@ -52,6 +55,18 @@ export async function decompileWorkspace(proj: ProjectInfo): Promise<boolean> {
     }
     Object.assign(proj, await getProjectInfo());
     return true;
+}
+
+export async function openClassesJaf() {
+    const folder = vscode.workspace.workspaceFolders?.[0];
+    if (!folder) return;
+    const uri = vscode.Uri.joinPath(folder.uri, outputDirName, 'classes.jaf');
+    try {
+        const doc = await vscode.workspace.openTextDocument(uri);
+        await vscode.window.showTextDocument(doc);
+    } catch (e) {
+        log.error(e as Error);
+    }
 }
 
 async function hasMatchingFiles(folder: vscode.WorkspaceFolder, pattern: string): Promise<boolean> {

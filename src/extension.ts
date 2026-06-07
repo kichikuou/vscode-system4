@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { decompileWorkspace } from './decompile';
+import { decompileWorkspace, openClassesJaf } from './decompile';
 import { activateDebugger } from './debugger';
-import { startClient, stopClient, gotoEntryPoint } from './lsp';
+import { startClient, stopClient } from './lsp';
 import { registerCompileTaskProviders } from './compile';
 import { getXsystem4Path } from './xsystem4';
 import * as sys4lang from './sys4lang';
@@ -22,7 +22,7 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('system4.decompile', async () => {
             if (await decompileWorkspace(proj)) {
                 await restartClient(proj);
-                await gotoEntryPoint();
+                await openClassesJaf();
             }
         }),
         vscode.commands.registerCommand('system4.server.restart', () => restartClient(proj)),
