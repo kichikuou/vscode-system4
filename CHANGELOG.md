@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1 - 2026-08-02
+- Automatically open `classes.jaf` after decompiling an AIN file.
+- Fixed compilation and decompilation from paths containing parentheses.
+
 ## 1.4.0 - 2026-04-29
 - On Windows x64 / Linux x64, sys4lang is now downloaded from GitHub Releases
   on demand instead of being bundled with the extension. Updates are checked
