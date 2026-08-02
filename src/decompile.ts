@@ -35,7 +35,7 @@ export async function decompileWorkspace(proj: ProjectInfo): Promise<boolean> {
     }
     const args = ['-o', outputDirName, '--move-to-original-file', ainPath];
     const cwd = folder.uri.fsPath;
-    const execution = new vscode.ShellExecution(decompilerPath, args, { cwd });
+    const execution = new vscode.ProcessExecution(decompilerPath, args, { cwd });
 	const task = new vscode.Task(
 		{ type: 'system4-decompile' }, vscode.TaskScope.Workspace, 'decompile', 'system4', execution);
 
